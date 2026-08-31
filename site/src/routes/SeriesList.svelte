@@ -1,24 +1,39 @@
 <script lang="ts">
-  import { link } from "svelte-spa-router";
-  import { owned, ownedCount } from "../lib/owned";
+  import { push, link } from "svelte-spa-router";
+  import { owned } from "../lib/owned";
   import { data } from "../lib/data.svelte";
 
-  let query = $state("");
-  let sortKey = $state<"title" | "date">("title");
-  let sortDir = $state<"asc" | "desc">("asc");
-  let page = $state(1);
+  function getInitialParams() {
+    const hash = window.location.hash || "";
+    const qIdx = hash.indexOf("?");
+    const p = qIdx >= 0 ? new URLSearchParams(hash.slice(qIdx + 1)) : new URLSearchParams();
+    return {
+      page: Number(p.get("page")) || 1,
+      q: p.get("q") || "",
+      sort: (p.get("sort") as "title" | "date") || "date",
+      dir: (p.get("dir") as "asc" | "desc") || "desc",
+    };
+  }
+
+  const init = getInitialParams();
+
+  let inputQuery = $state(init.q);  // input에 표시되는 값
+  let searchQuery = $state(init.q);  // 실제 검색에 사용되는 값
+  let sortKey = $state<"title" | "date">(init.sort);
+  let sortDir = $state<"asc" | "desc">(init.dir);
+  let page = $state(init.page);
+
   const PAGE_SIZE = 100;
 
-  // 검색/정렬 변경 시 1페이지로 리셋
-  $effect(() => {
-    query;
-    sortKey;
-    sortDir;
-    page = 1;
-  });
+  const ownedIds = $derived($owned);
 
-  const filteredSeries = $derived(() => {
-    const q = query.trim().toLowerCase();
+  function isOwned(itemId: string, isbn?: string | null): boolean {
+    const id = itemId || isbn || "";
+    return id ? ownedIds.has(id) : false;
+  }
+
+  const filteredSeries = $derived.by(() => {
+    const q = searchQuery.trim().toLowerCase();
     const detailMap = new Map(data.details.map((d) => [d.itemId, d]));
     let list = data.series
       .filter((s) => s.items.length > 0)
@@ -27,7 +42,6 @@
           ...item,
           ...(detailMap.get(item.itemId) || {}),
         }));
-        // 첫 번째 책의 정보 사용 (출간일, 작가, 표지)
         const first = items[0] || {};
         return {
           ...s,
@@ -48,19 +62,18 @@
     if (sortKey === "title") {
       return list.sort((a, b) => mult * a.name.localeCompare(b.name, "ko"));
     }
-    // 출간일 정렬: 첫 번째 책의 출간일 기준
     const parseDate = (d?: string) => {
       if (!d) return 0;
       const m = d.match(/(\d{4})\.(\d{2})\.(\d{2})?/);
       if (!m) return 0;
       return Number(m[1]) * 10000 + Number(m[2]) * 100 + (m[3] ? Number(m[3]) : 0);
     };
-    return list.sort((a, b) => mult * (parseDate(b.publishDate) - parseDate(a.publishDate)));
+    return list.sort((a, b) => mult * (parseDate(a.publishDate) - parseDate(b.publishDate)));
   });
 
-  const pagedSeries = $derived(() => {
-    const all = filteredSeries();
-    const totalPages = Math.ceil(all.length / PAGE_SIZE);
+  const pagedSeries = $derived.by(() => {
+    const all = filteredSeries;
+    const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
     return {
       items: all.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
       totalPages,
@@ -68,41 +81,72 @@
     };
   });
 
-  // $owned를 사용하여 반응형으로 만들기
-  const ownedIds = $derived($owned);
+  function syncUrl() {
+    const query = new URLSearchParams();
+    if (page > 1) query.set("page", String(page));
+    if (inputQuery) query.set("q", inputQuery);
+    if (sortKey !== "date") query.set("sort", sortKey);
+    if (sortDir !== "desc") query.set("dir", sortDir);
+    const qs = query.toString();
+    push("/series" + (qs ? "?" + qs : ""));
+  }
 
-  function isOwned(itemId: string, isbn?: string | null): boolean {
-    const id = itemId || isbn || "";
-    return id ? ownedIds.has(id) : false;
+  function handleSearchKeydown(e: KeyboardEvent) {
+    if (e.key === "Enter") {
+      searchQuery = inputQuery;
+      page = 1;
+      syncUrl();
+    }
+  }
+
+  function goToPage(p: number) {
+    page = p;
+    syncUrl();
+    window.scrollTo(0, 0);
+  }
+
+  function changeSort(key: "title" | "date") {
+    if (sortKey === key) {
+      sortDir = sortDir === "asc" ? "desc" : "asc";
+    } else {
+      sortKey = key;
+    }
+    page = 1;
+    syncUrl();
   }
 </script>
 
 <div class="toolbar">
   <input
     type="text"
-    placeholder="시리즈 검색..."
-    bind:value={query}
+    placeholder="시리즈 검색 (엔터로 검색)..."
+    bind:value={inputQuery}
+    onkeydown={handleSearchKeydown}
     class="search-input"
   />
 
   <div class="sort-group">
-    <select bind:value={sortKey}>
-      <option value="title">제목</option>
-      <option value="date">출간일</option>
-    </select>
-    <button
-      class="sort-dir"
-      onclick={() => (sortDir = sortDir === "asc" ? "desc" : "asc")}
-    >{sortDir === "asc" ? "↑" : "↓"}</button>
+    <button class:active={sortKey === "title"} onclick={() => changeSort("title")}>제목</button>
+    <button class:active={sortKey === "date"} onclick={() => changeSort("date")}>출간일</button>
+    <button class="sort-dir" onclick={() => changeSort(sortKey)}>
+      {sortDir === "asc" ? "↑" : "↓"}
+    </button>
   </div>
 </div>
 
 <div class="results">
-  {#if filteredSeries().length === 0}
+  <h2>
+    {searchQuery.trim() ? `검색 결과 (${pagedSeries.total}건)` : `전체 시리즈 (${pagedSeries.total}건)`}
+    {#if pagedSeries.totalPages > 1}
+      <span class="page-info"> — {page}/{pagedSeries.totalPages}페이지</span>
+    {/if}
+  </h2>
+
+  {#if pagedSeries.total === 0}
     <p class="empty">결과가 없습니다.</p>
   {:else}
     <div class="series-grid">
-      {#each pagedSeries().items as group (group.name)}
+      {#each pagedSeries.items as group (group.name)}
         {@const ownedInGroup = group.items.filter((b: any) =>
           isOwned(b.itemId, b.isbn)
         ).length}
@@ -134,13 +178,13 @@
       {/each}
     </div>
 
-    {#if pagedSeries().totalPages > 1}
+    {#if pagedSeries.totalPages > 1}
       <div class="pagination">
-        <button disabled={page <= 1} onclick={() => (page = 1)}>«</button>
-        <button disabled={page <= 1} onclick={() => (page--)}>‹</button>
-        <span>{page} / {pagedSeries().totalPages}</span>
-        <button disabled={page >= pagedSeries().totalPages} onclick={() => (page++)}>›</button>
-        <button disabled={page >= pagedSeries().totalPages} onclick={() => (page = pagedSeries().totalPages)}>»</button>
+        <button disabled={page <= 1} onclick={() => goToPage(1)}>«</button>
+        <button disabled={page <= 1} onclick={() => goToPage(page - 1)}>‹</button>
+        <span>{page} / {pagedSeries.totalPages}</span>
+        <button disabled={page >= pagedSeries.totalPages} onclick={() => goToPage(page + 1)}>›</button>
+        <button disabled={page >= pagedSeries.totalPages} onclick={() => goToPage(pagedSeries.totalPages)}>»</button>
       </div>
     {/if}
   {/if}
@@ -176,24 +220,41 @@
     align-items: center;
   }
 
-  .sort-group select {
-    padding: 8px 10px;
+  .sort-group button {
+    padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    font-size: 13px;
     background: white;
     cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+
+  .sort-group button.active {
+    background: #4a90d9;
+    color: white;
+    border-color: #4a90d9;
   }
 
   .sort-dir {
-    width: 36px;
-    padding: 8px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: white;
-    cursor: pointer;
-    font-size: 16px;
+    width: 36px !important;
+    padding: 8px 0 !important;
     text-align: center;
+    font-size: 16px !important;
+  }
+
+  .results h2 {
+    font-size: 16px;
+    color: #555;
+    margin: 0 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .page-info {
+    font-weight: normal;
+    font-size: 14px;
+    color: #888;
   }
 
   .empty {
@@ -204,8 +265,16 @@
 
   .series-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
+  }
+
+  @media (max-width: 900px) {
+    .series-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 650px) {
+    .series-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   .series-card {
@@ -226,14 +295,14 @@
 
   .series-cover {
     width: 100%;
-    height: 180px;
+    height: 260px;
     object-fit: cover;
     border-bottom: 1px solid #e0e0e0;
   }
 
   .series-cover-placeholder {
     width: 100%;
-    height: 180px;
+    height: 260px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -287,5 +356,41 @@
   .series-date {
     font-size: 11px;
     color: #999;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 16px 0;
+  }
+
+  .pagination button {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    min-width: 36px;
+  }
+
+  .pagination button:hover:not(:disabled) {
+    background: #f5f5f5;
+    border-color: #bbb;
+  }
+
+  .pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .pagination span {
+    font-size: 14px;
+    color: #333;
+    min-width: 80px;
+    text-align: center;
   }
 </style>

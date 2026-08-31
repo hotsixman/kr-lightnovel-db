@@ -18,6 +18,14 @@
     "/series/:series-name": SeriesDetail,
   };
 
+  // 쿼리 파라미터 파싱 헬퍼
+  function parseHashQuery(): Record<string, string> {
+    const hash = window.location.hash || "";
+    const qIdx = hash.indexOf("?");
+    if (qIdx === -1) return {};
+    return Object.fromEntries(new URLSearchParams(hash.slice(qIdx + 1)));
+  }
+
   function exportOwned() {
     const blob = new Blob(
       [JSON.stringify([...$owned], null, 2)],
@@ -115,6 +123,7 @@
     max-width: 960px;
     margin: 0 auto;
     padding: 24px 16px;
+    width: 100%;
   }
 
   header {
