@@ -1,0 +1,17 @@
+{
+  "name": "korean-lightnovel-db",
+  "version": "1.0.0",
+  "description": "Korean light novel database crawler using Aladin website",
+  "type": "module",
+  "scripts": {
+    "crawl": "bun run script/crawl.ts",
+    "build": "bun run --preload ./script/crawl.ts"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.5.0"
+  }
+}
