@@ -1,0 +1,28 @@
+name: check-duplicates
+
+on:
+  pull_request:
+    paths:
+      - 'data/lightnovel_list.json'
+      - 'data/lightnovel_detail.json'
+      - 'data/lightnovel_series.json'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  check-duplicates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Check for duplicates
+        run: bun run script/check_duplicates.ts

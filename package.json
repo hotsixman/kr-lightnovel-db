@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "crawl": "bun run script/crawl.ts",
+    "check-duplicates": "bun run script/check_duplicates.ts",
     "build": "bun run --preload ./script/crawl.ts"
   },
   "dependencies": {
