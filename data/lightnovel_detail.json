@@ -254010,98 +254010,6 @@
     "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=46468140"
   },
   {
-    "itemId": "298812737",
-    "title": "이세계 묵시록 마이노그라 3",
-    "authors": [
-      "카즈노 페후"
-    ],
-    "illustrators": [
-      "준"
-    ],
-    "translators": [
-      "손종근"
-    ],
-    "publisher": "㈜소미미디어",
-    "publishDate": "2022.07.15",
-    "isbn": "9791138404945",
-    "pages": 356,
-    "seriesName": "이세계 묵시록 마이노그라",
-    "cover": "https://image.aladin.co.kr/product/29881/27/cover500/k752838830_1.jpg",
-    "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=298812737"
-  },
-  {
-    "itemId": "281212587",
-    "title": "피도 눈물도 없는 용사 5",
-    "authors": [
-      "박제후"
-    ],
-    "illustrators": [
-      "GAMBE"
-    ],
-    "translators": [],
-    "publisher": "길찾기",
-    "publishDate": "2018.06.25",
-    "isbn": "9791160855159",
-    "pages": 420,
-    "seriesName": "피도 눈물도 없는 용사",
-    "cover": "https://image.aladin.co.kr/product/28121/25/cover500/k492734648_1.jpg",
-    "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=281212587"
-  },
-  {
-    "itemId": "6377468",
-    "title": "언젠가는 대마왕 5",
-    "authors": [
-      "미즈키 쇼타로"
-    ],
-    "illustrators": [],
-    "translators": [
-      "김해룡"
-    ],
-    "publisher": "서울미디어코믹스(서울문화사)",
-    "publishDate": "2010.02.10",
-    "isbn": "9788926310540",
-    "pages": 200,
-    "seriesName": "언젠가는 대마왕",
-    "cover": "https://image.aladin.co.kr/product/637/74/cover500/8926311422_1.jpg",
-    "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=6377468"
-  },
-  {
-    "itemId": "906698",
-    "title": "요시나가 씨 댁의 가고일 2",
-    "authors": [
-      "타구치 센넨도"
-    ],
-    "illustrators": [
-      "히무카이 유지"
-    ],
-    "translators": [
-      "김지현"
-    ],
-    "publisher": "학산문화사(라이트노벨)",
-    "publishDate": "2007.04.10",
-    "isbn": "9788952991706",
-    "pages": 232,
-    "seriesName": "요시나가 씨 댁의 가고일",
-    "cover": "https://image.aladin.co.kr/product/90/66/cover500/6000220464_1.jpg",
-    "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=906698"
-  },
-  {
-    "itemId": "622470",
-    "title": "기동전사 건담 시드 3",
-    "authors": [
-      "토미노 요시유키"
-    ],
-    "illustrators": [],
-    "translators": [],
-    "publisher": "학산문화사(만화)",
-    "publishDate": "2006.02.09",
-    "isbn": "9788952978837",
-    "pages": 200,
-    "seriesName": "기동전사 건담 시드",
-    "cover": "https://image.aladin.co.kr/product/62/24/cover500/8952978838_1.jpg",
-    "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=622470"
-  },
-  {
     "itemId": "274170562",
     "title": "내 여동생이 이렇게 귀여울 리가 없어 13",
     "authors": [
@@ -255170,5 +255078,97 @@
     "seriesName": "델피니아 전기",
     "cover": "https://image.aladin.co.kr/product/50/93/cover500/8952882113_1.gif",
     "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=509377"
+  },
+  {
+    "itemId": "298812737",
+    "title": "이세계 묵시록 마이노그라 3",
+    "authors": [
+      "카즈노 페후"
+    ],
+    "illustrators": [
+      "준"
+    ],
+    "translators": [
+      "손종근"
+    ],
+    "publisher": "㈜소미미디어",
+    "publishDate": "2022.07.15",
+    "isbn": "9791138404945",
+    "pages": 356,
+    "seriesName": "이세계 묵시록 마이노그라",
+    "cover": "https://image.aladin.co.kr/product/29881/27/cover500/k752838830_1.jpg",
+    "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=298812737"
+  },
+  {
+    "itemId": "281212587",
+    "title": "피도 눈물도 없는 용사 5",
+    "authors": [
+      "박제후"
+    ],
+    "illustrators": [
+      "GAMBE"
+    ],
+    "translators": [],
+    "publisher": "길찾기",
+    "publishDate": "2018.06.25",
+    "isbn": "9791160855159",
+    "pages": 420,
+    "seriesName": "피도 눈물도 없는 용사",
+    "cover": "https://image.aladin.co.kr/product/28121/25/cover500/k492734648_1.jpg",
+    "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=281212587"
+  },
+  {
+    "itemId": "6377468",
+    "title": "언젠가는 대마왕 5",
+    "authors": [
+      "미즈키 쇼타로"
+    ],
+    "illustrators": [],
+    "translators": [
+      "김해룡"
+    ],
+    "publisher": "서울미디어코믹스(서울문화사)",
+    "publishDate": "2010.02.10",
+    "isbn": "9788926310540",
+    "pages": 200,
+    "seriesName": "언젠가는 대마왕",
+    "cover": "https://image.aladin.co.kr/product/637/74/cover500/8926311422_1.jpg",
+    "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=6377468"
+  },
+  {
+    "itemId": "906698",
+    "title": "요시나가 씨 댁의 가고일 2",
+    "authors": [
+      "타구치 센넨도"
+    ],
+    "illustrators": [
+      "히무카이 유지"
+    ],
+    "translators": [
+      "김지현"
+    ],
+    "publisher": "학산문화사(라이트노벨)",
+    "publishDate": "2007.04.10",
+    "isbn": "9788952991706",
+    "pages": 232,
+    "seriesName": "요시나가 씨 댁의 가고일",
+    "cover": "https://image.aladin.co.kr/product/90/66/cover500/6000220464_1.jpg",
+    "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=906698"
+  },
+  {
+    "itemId": "622470",
+    "title": "기동전사 건담 시드 3",
+    "authors": [
+      "토미노 요시유키"
+    ],
+    "illustrators": [],
+    "translators": [],
+    "publisher": "학산문화사(만화)",
+    "publishDate": "2006.02.09",
+    "isbn": "9788952978837",
+    "pages": 200,
+    "seriesName": "기동전사 건담 시드",
+    "cover": "https://image.aladin.co.kr/product/62/24/cover500/8952978838_1.jpg",
+    "url": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=622470"
   }
 ]
